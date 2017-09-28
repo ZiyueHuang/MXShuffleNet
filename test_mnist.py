@@ -7,7 +7,10 @@ logging.getLogger().setLevel(logging.INFO)
 
 mnist = mx.test_utils.get_mnist()
 
-batch_size = 100
+print mnist['train_data'].shape
+
+
+batch_size = 500
 
 train_data = np.concatenate((mnist['train_data'], mnist['train_data'], mnist['train_data']), 
 	                        axis=1)
@@ -19,14 +22,14 @@ val_iter = mx.io.NDArrayIter(val_data, mnist['test_label'], batch_size)
 
 shufflenet = get_shufflenet()
 
-shufflenet_mod = mx.mod.Module(symbol=shufflenet, context=mx.cpu())
+shufflenet_mod = mx.mod.Module(symbol=shufflenet, context=[mx.gpu(0), mx.gpu(1)])
 
 shufflenet_mod.fit(train_iter, 
               eval_data=val_iter, 
               optimizer='sgd',  
               optimizer_params={'learning_rate':0.01},  
               eval_metric='acc',  
-              batch_end_callback = mx.callback.Speedometer(batch_size, 100), 
+              batch_end_callback = mx.callback.Speedometer(batch_size, 20), 
               num_epoch=10) 
 
 
