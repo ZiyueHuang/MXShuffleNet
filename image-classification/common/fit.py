@@ -180,6 +180,8 @@ def fit(args, network, data_loader, **kwargs):
     if args.network == 'alexnet':
         # AlexNet will not converge using Xavier
         initializer = mx.init.Normal()
+    if args.network == 'shufflenet':
+        initializer = mx.init.Uniform()
     else:
         initializer = mx.init.Xavier(
             rnd_type='gaussian', factor_type="in", magnitude=2)
