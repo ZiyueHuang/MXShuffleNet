@@ -15,6 +15,8 @@ def channel_shuffle(data, groups):
 
 def shuffleUnit(residual, in_channels, out_channels, combine_type, groups=3, grouped_conv=True):
 
+    bottleneck_channels = out_channels // 4
+
     if combine_type == 'add':
         DWConv_stride = 1
     elif combine_type == 'concat':
@@ -22,8 +24,6 @@ def shuffleUnit(residual, in_channels, out_channels, combine_type, groups=3, gro
         out_channels -= in_channels
 
     first_groups = groups if grouped_conv else 1
-
-    bottleneck_channels = out_channels // 4
 
     data = mx.sym.Convolution(data=residual, num_filter=bottleneck_channels, 
                       kernel=(1, 1), stride=(1, 1), num_group=first_groups)
